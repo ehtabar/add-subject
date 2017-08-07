@@ -41,6 +41,7 @@
 	$categories=qa_db_select_with_pending(qa_db_category_nav_selectspec($editcategoryid, true, false, true));
 
 
+
 //	Check admin privileges (do late to allow one DB query)
 
 	if (!qa_admin_check_privileges($qa_content))
@@ -50,6 +51,7 @@
 //	Work out the appropriate state for the page
 
 	$editcategory=@$categories[$editcategoryid];
+
 
 	if (isset($editcategory)) {
 		$parentid=qa_get('addsub');
@@ -134,6 +136,9 @@
 			$inparentid=$setparent ? qa_get_category_field_value('parent') : $editcategory['parentid'];
 			$inposition=qa_post_text('position');
 			$errors=array();
+			$title = qa_post_text('title');
+			$subject =qa_post_text('subject');
+
 
 		//	Check the parent ID
 
@@ -203,8 +208,10 @@
 		//	Perform appropriate database action
 
 			if (empty($errors)) {
-				if (isset($editcategory['categoryid'])) { // changing existing category
-					qa_db_category_rename($editcategory['categoryid'], $inname, $inslug);
+				if (isset($editcategory['categoryid'])) {
+				 // changing existing category
+
+					qa_db_category_rename($editcategory['categoryid'], $inname, $inslug,$title,$subject);
 
 					$recalc=false;
 
@@ -220,7 +227,7 @@
 					qa_redirect(qa_request(), array('edit' => $editcategory['categoryid'], 'saved' => true, 'recalc' => (int)$recalc));
 
 				} else { // creating a new one
-					$categoryid=qa_db_category_create($inparentid, $inname, $inslug);
+					$categoryid=qa_db_category_create($inparentid, $inname, $inslug,$title,$subject);
 
 					qa_db_category_set_content($categoryid, $incontent);
 
@@ -281,7 +288,7 @@
 
 
 	} elseif (isset($editcategory)) {
-
+		
 		$qa_content['form']=array(
 			'tags' => 'method="post" action="'.qa_path_html(qa_request()).'"',
 
@@ -320,6 +327,23 @@
 					'error' => qa_html(@$errors['content']),
 					'rows' => 2,
 				),
+				'title'=>[
+					'id' => 'page_title',
+					'tags' => 'name="title"',
+					'label' => qa_lang_html('admin/page_title'),
+					'value' => @$editcategory['page_title'],
+					'error' => qa_html(@$errors['title']),
+					'rows' => 2,
+				],
+				'subject'=>[
+					'id' => 'page_subject',
+					'tags' => 'name="subject"',
+					'label' => qa_lang_html('admin/page_subject'),
+					'value' => @$editcategory['subject'],
+					'error' => qa_html(@$errors['content']),
+					'rows' => 2,
+				]
+
 			),
 
 			'buttons' => array(

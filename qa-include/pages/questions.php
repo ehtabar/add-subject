@@ -71,7 +71,8 @@
 		if (!isset($categoryid))
 			return include QA_INCLUDE_DIR.'qa-page-not-found.php';
 
-		$categorytitlehtml=qa_html($categories[$categoryid]['title']);
+
+		$categorytitlehtml=qa_html($categories[$categoryid]['subject']);
 		$nonetitle=qa_lang_html_sub('main/no_questions_in_x', $categorytitlehtml);
 
 	} else
@@ -130,6 +131,8 @@
 
 	if (QA_ALLOW_UNINDEXED_QUERIES || !$countslugs)
 		$qa_content['navigation']['sub']=qa_qs_sub_navigation($sort, $categoryslugs);
+
+
 
 
 	return $qa_content;

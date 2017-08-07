@@ -896,7 +896,7 @@
 		);
 
 		$selectspec=array(
-			'columns' => array('^categories.categoryid', '^categories.parentid', 'title' => '^categories.title', 'tags' => '^categories.tags', '^categories.qcount', '^categories.position','^categories.subject','^categories.page_title'),
+			'columns' => array('^categories.categoryid', '^categories.parentid', 'title' => '^categories.title', 'tags' => '^categories.tags', '^categories.qcount', '^categories.position','^categories.subject'),
 			'source' => '^categories JOIN ('.implode(' UNION ', $parentselects).') y ON ^categories.parentid<=>parentkey'.($full ? ' LEFT JOIN ^categories AS child ON child.parentid=^categories.categoryid GROUP BY ^categories.categoryid' : '').' ORDER BY ^categories.position',
 			'arguments' => array($slugsorid, $slugsorid, $slugsorid, $slugsorid),
 			'arraykey' => 'categoryid',
